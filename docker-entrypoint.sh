@@ -5,12 +5,12 @@ if [ ! -f /var/lib/terra/setupdone ]; then
   dasel put bool -f /var/lib/terra/config/app.toml api.enable true
   wget https://columbus-genesis.s3.ap-northeast-1.amazonaws.com/columbus-5-genesis.json -O /var/lib/terra/config/genesis.json
   wget https://network.terra.dev/addrbook.json -O /var/lib/terra/config/addrbook.json
-  if [ ! -z ${QUICKSYNC_URL} ]; then
-    wget ${QUICKSYNC_URL} -O /var/lib/terra/quicksync.tar.lz4
-    tar zvf /var/lib/terra/quicksync.tar.lz4 -I lz4 -C /var/lib/terra/data
-    rm /var/lib/terra/quicksync.tar.lz4
+  if [ ! -z "${QUICKSYNC_MIRROR}" ]; then
+    JQ_QUERY=".[] |select(.file==\"columbus-5-default\")|select (.mirror==\"${QUICKSYNC_MIRROR}\")|.url"
+    QUICKSYNC_URL=$(wget -q -O - https://quicksync.io/terra.json | jq -r "${JQ_QUERY}")
+    wget "${QUICKSYNC_URL}" -q -O - | lz4 -d | tar xvf - -C /var/lib/terra
   fi
   touch /var/lib/terra/setupdone
 fi
 
-exec "@"
+exec "$@"

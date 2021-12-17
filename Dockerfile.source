@@ -14,7 +14,7 @@ FROM debian:bullseye-slim
 ARG USER=terra
 ARG UID=10001
 
-RUN apt-get update && apt-get -y install --no-install-recommends ca-certificates tzdata wget lz4
+RUN apt-get update && apt-get -y install --no-install-recommends ca-certificates tzdata wget lz4 jq
 RUN wget -qO /usr/local/bin/dasel https://github.com/TomWright/dasel/releases/download/v1.22.1/dasel_linux_amd64
 RUN chmod +x /usr/local/bin/dasel
 

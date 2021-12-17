@@ -21,7 +21,7 @@ services:
       - terra-data:/var/lib/terra
     environment:
       - NODE_NAME=${NODE_NAME}
-      - QUICKSYNC_URL=${QUICKSYNC_URL}
+      - QUICKSYNC_MIRROR=${QUICKSYNC_MIRROR}
     entrypoint:
       - docker-entrypoint.sh
       - terrad
@@ -32,6 +32,7 @@ services:
       nofile:
         soft: 65535
         hard: 65535
+    <<: *logging
     labels:
       - traefik.enable=true
       - traefik.http.routers.lcd.service=lcd
