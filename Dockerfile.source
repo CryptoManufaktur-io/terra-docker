@@ -1,0 +1,38 @@
+# Build Terra in a stock Go build container
+FROM golang:1.17 as builder
+
+ARG BUILD_TARGET
+
+RUN apt-get update && apt-get -y install make gcc git bash
+
+WORKDIR /src
+RUN bash -c "git clone https://github.com/terra-money/core && cd core && git config advice.detachedHead false && git fetch --all --tags && git checkout ${BUILD_TARGET} && make install"
+
+# Pull all binaries into a second stage deploy container
+FROM debian:bullseye-slim
+
+ARG USER=terra
+ARG UID=10001
+
+RUN apt-get update && apt-get -y install --no-install-recommends ca-certificates tzdata wget lz4
+RUN wget -qO /usr/local/bin/dasel https://github.com/TomWright/dasel/releases/download/v1.22.1/dasel_linux_amd64
+RUN chmod +x /usr/local/bin/dasel
+
+# See https://stackoverflow.com/a/55757473/12429735RUN
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --shell "/sbin/nologin" \
+    --uid "${UID}" \
+    "${USER}"
+
+RUN mkdir -p /var/lib/terra && chown ${USER}:${USER} /var/lib/terra
+
+# Copy executable
+COPY --from=builder /go/bin/terrad /usr/local/bin/
+COPY --from=builder /go/pkg/mod/github.com/!cosm!wasm/wasmvm@v0.16.2/api/libwasmvm.so /usr/lib/
+COPY ./docker-entrypoint.sh /usr/local/bin
+
+USER ${USER}
+
+ENTRYPOINT ["terrad"]

@@ -1,0 +1,46 @@
+version: "3.4"
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: "3"
+
+services:
+  terra:
+    restart: "${RESTART}"
+    build:
+      context: .
+      dockerfile: ${DOCKERFILE}
+      args:
+        - BUILD_TARGET=${SRC_BUILD_TARGET}
+    stop_grace_period: 3m
+    image: terra:local
+    user: terra
+    volumes:
+      - terra-data:/var/lib/terra
+    environment:
+      - NODE_NAME=${NODE_NAME}
+      - QUICKSYNC_URL=${QUICKSYNC_URL}
+    entrypoint:
+      - docker-entrypoint.sh
+      - terrad
+      - --home
+      - /var/lib/terra
+      - start
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.lcd.service=lcd
+      - traefik.http.routers.lcd.entrypoints=websecure
+      - traefik.http.routers.lcd.rule=Host(`${LCD_HOST}.${DOMAIN}`)
+      - traefik.http.routers.lcdlb.service=lcd
+      - traefik.http.routers.lcdlb.entrypoints=websecure
+      - traefik.http.routers.lcdlb.rule=Host(`${LCD_LB}.${DOMAIN}`)
+      - traefik.http.services.lcd.loadbalancer.server.port=1317
+
+volumes:
+  terra-data:
