@@ -25,6 +25,7 @@ services:
       - NODE_NAME=${NODE_NAME}
       - QUICKSYNC_MIRROR=${QUICKSYNC_MIRROR}
       - METRICS_PORT=${METRICS_PORT}
+      - RPC_PORT=${RPC_PORT}
     entrypoint:
       - docker-entrypoint.sh
       - terrad
