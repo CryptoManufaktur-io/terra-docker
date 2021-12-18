@@ -28,6 +28,14 @@ services:
       - --home
       - /var/lib/terra
       - start
+      - --pruning
+      - custom
+      - --pruning-interval
+      - "10"
+      - --pruning-keep-every
+      - "0"
+      - --pruning-keep-recent
+      - "100"
     ulimits:
       nofile:
         soft: 65535
