@@ -3,10 +3,10 @@ FROM golang:1.17 as builder
 
 ARG BUILD_TARGET
 
-RUN apt-get update && apt-get -y install make gcc git bash
+RUN apt-get update && apt-get -y install make gcc git bash libleveldb-dev
 
 WORKDIR /src
-RUN bash -c "git clone https://github.com/terra-money/core && cd core && git config advice.detachedHead false && git fetch --all --tags && git checkout ${BUILD_TARGET} && make install"
+RUN bash -c "git clone https://github.com/terra-money/core && cd core && git config advice.detachedHead false && git fetch --all --tags && git checkout ${BUILD_TARGET} && make install BUILD_TAGS=cleveldb"
 RUN find /go/pkg/mod -name 'libwasmvm.so' -exec cp {} /usr/lib/ \;
 
 FROM ghcr.io/tomwright/dasel:latest as dasel
@@ -17,7 +17,7 @@ FROM debian:bullseye-slim
 ARG USER=terra
 ARG UID=10001
 
-RUN apt-get update && apt-get -y install --no-install-recommends ca-certificates tzdata wget lz4 jq
+RUN apt-get update && apt-get -y install --no-install-recommends ca-certificates tzdata wget lz4 jq libleveldb1d
 
 # See https://stackoverflow.com/a/55757473/12429735RUN
 RUN adduser \
