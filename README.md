@@ -8,6 +8,13 @@ This repo assumes columbus-5 mainnet, and configures variables as per Terra [nod
 
 It assumes you are running traefik to expose the LCD port 1317 via https://. You'll want to firewall access to 443.
 
+You can expose these ports instead via `lcd-shared.yml` and `rpc-shared.yml`. Caution with both of those, they need to be firewalled.
+
+`traefik-cf.yml`, `traefik-aws.yml` and `ext-network.yml` are all different ways of running / hooking into traefik.
+
+The prometheus metrics port can be exposed with `metrics-shared.yml`. Typically it'd stay inside docker, and be scraped from a prometheus in a shared
+docker network.
+
 To start, run `docker-compose up -d`. To update terrad, run `docker-compose build --no-cache`, followed by
 `docker-compose down && docker-compose up -d`.
 
