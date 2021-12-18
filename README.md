@@ -4,7 +4,10 @@ Docker-compose for Terra LCD node
 
 Start by `cp default.env .env` and set the `NODE_NAME`. Optionally adjust `QUICKSYNC_MIRROR`.
 
+`COMPOSE_FILE` determines which yml files to use, see below for some options.
+
 This repo assumes columbus-5 mainnet, and configures variables as per Terra [node instructions](https://docs.terra.money/How-to/Run-a-full-Terra-node/).
+It uses cleveldb for performance, instead of the default goleveldb.
 
 It assumes you are running traefik to expose the LCD port 1317 via https://. You'll want to firewall access to 443.
 
