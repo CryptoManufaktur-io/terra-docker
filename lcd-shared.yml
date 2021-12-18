@@ -1,0 +1,6 @@
+# To be used in conjunction with terra.yml
+version: "3.4"
+services:
+  terra:
+    ports:
+      - 1317:1317/tcp
