@@ -50,9 +50,11 @@ services:
       - traefik.http.routers.lcd.service=lcd
       - traefik.http.routers.lcd.entrypoints=websecure
       - traefik.http.routers.lcd.rule=Host(`${LCD_HOST}.${DOMAIN}`)
+      - traefik.http.routers.lcd.tls.certresolver=letsencrypt
       - traefik.http.routers.lcdlb.service=lcd
       - traefik.http.routers.lcdlb.entrypoints=websecure
       - traefik.http.routers.lcdlb.rule=Host(`${LCD_LB}.${DOMAIN}`)
+      - traefik.http.routers.lcdlb.tls.certresolver=letsencrypt
       - traefik.http.services.lcd.loadbalancer.server.port=1317
 
 volumes:
