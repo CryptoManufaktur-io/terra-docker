@@ -47,6 +47,15 @@ services:
     <<: *logging
     labels:
       - traefik.enable=true
+      - traefik.http.routers.terra.service=terra
+      - traefik.http.routers.terra.entrypoints=websecure
+      - traefik.http.routers.terra.rule=Host(`${RPC_HOST}.${DOMAIN}`)
+      - traefik.http.routers.terra.tls.certresolver=letsencrypt
+      - traefik.http.routers.terralb.service=terra
+      - traefik.http.routers.terralb.entrypoints=websecure
+      - traefik.http.routers.terralb.rule=Host(`${RPC_LB}.${DOMAIN}`)
+      - traefik.http.routers.terralb.tls.certresolver=letsencrypt
+      - traefik.http.services.terra.loadbalancer.server.port=${RPC_PORT}
       - traefik.http.routers.lcd.service=lcd
       - traefik.http.routers.lcd.entrypoints=websecure
       - traefik.http.routers.lcd.rule=Host(`${LCD_HOST}.${DOMAIN}`)
